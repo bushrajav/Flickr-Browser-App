@@ -1,4 +1,5 @@
 package com.example.flickrbrowserapp;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -6,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewAdapter.FlickrImageViewHolder> {
@@ -20,6 +24,7 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
         mContext = context;
         mPhotosList = photosList;
     }
+
     @NonNull
     @Override
     public FlickrImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,27 +34,32 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
 
     @Override
     public void onBindViewHolder(@NonNull FlickrImageViewHolder holder, int position) {
-        Photo photoItem = mPhotosList.get(position);
-        Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + "------>" + position);
+        if ((mPhotosList == null) || (mPhotosList.size() == 0)) {
+            holder.thumbnail.setImageResource(R.drawable.placeholder);
+            holder.title.setText(R.string.empty_photo);
+        } else {
+            Photo photoItem = mPhotosList.get(position);
+            Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + "------> " + position);
 
-        Picasso.with(mContext).load(photoItem.getImage())
-                .error(R.drawable.placeholder)
-                .placeholder(R.drawable.placeholder)
-                .into(holder.thumbnail);
+            Picasso.with(mContext).load(photoItem.getImage())
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
+                    .into(holder.thumbnail);
 
-        holder.title.setText(photoItem.getTitle());
+            holder.title.setText(photoItem.getTitle());
 
+        }
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: starts");
-        return ((mPhotosList != null) && (mPhotosList.size() != 0) ? mPhotosList.size() : 0);
+        // Log.d(TAG, "getItemCount: starts");
+        return ((mPhotosList != null) && (mPhotosList.size() != 0) ? mPhotosList.size() : 1);
     }
 
 
     void loadNewData(List<Photo> newPhotos) {
-    //    mPhotosList.clear();
+        //    mPhotosList.clear();
         mPhotosList = newPhotos;
         notifyDataSetChanged();
     }

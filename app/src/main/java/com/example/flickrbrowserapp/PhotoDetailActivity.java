@@ -1,32 +1,44 @@
 package com.example.flickrbrowserapp;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import android.view.View;
-
-public class PhotoDetailActivity extends AppCompatActivity {
+public class PhotoDetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_detail);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        activateToolbar(true);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        Intent intent = getIntent();
+        Photo photo = (Photo) intent.getSerializableExtra(PHOTO_TRANSFER);
+
+        TextView photo_author = findViewById(R.id.photo_author);
+        photo_author.setText(photo.getAuthor());
+
+        TextView photo_title = findViewById(R.id.photo_title);
+
+        Resources resources=getResources();
+        String text=resources.getString(R.string.photo_title_text,photo.getTitle());
+        photo_title.setText(text);
+      //  photo_title.setText(photo.getTitle());
+
+        TextView photo_tags = findViewById(R.id.photo_tags);
+        photo_title.setText(resources.getString(R.string.photo_title_text,photo.getTitle()));
+      //  photo_tags.setText(photo.getTags());
+
+        ImageView photo_image = findViewById(R.id.photo_image);
+        Picasso.with(this).load(photo.getLink())
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .into(photo_image);
     }
 
 }

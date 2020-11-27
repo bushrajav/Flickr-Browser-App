@@ -20,7 +20,7 @@ class GetFlickrJsonData extends AsyncTask<String, Void, List<Photo>> implements 
     private boolean mMatchAll;
 
     private final OnDataAvailable mCallback;
-    private boolean runningInSameThread=false;
+    private boolean runInSameThread=false;
 
     interface OnDataAvailable {
         void onDataAvailable(List<Photo> data, DownloadStatus status);
@@ -46,7 +46,6 @@ class GetFlickrJsonData extends AsyncTask<String, Void, List<Photo>> implements 
     @Override
     protected List<Photo> doInBackground(String... strings) {
         Log.d(TAG, "doInBackground: starts");
-        runningInSameThread=true;
         Log.d(TAG, "doInBackground: string[0] is "+strings[0]);
         String destinationUri = createUri(strings[0], mLanguage, mMatchAll);
 
@@ -59,6 +58,8 @@ class GetFlickrJsonData extends AsyncTask<String, Void, List<Photo>> implements 
 
     void executeOnSameThread(String searchCriteria) {
         Log.d(TAG, "executeOnSameThread: starts here");
+        runInSameThread=true;
+
         String destinationUri = createUri(searchCriteria, mLanguage, mMatchAll);
 
         GetRawData getRawData = new GetRawData(this);
@@ -108,7 +109,7 @@ class GetFlickrJsonData extends AsyncTask<String, Void, List<Photo>> implements 
                 status = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
-        if (runningInSameThread && mCallback != null) {
+        if (runInSameThread && mCallback != null) {
             mCallback.onDataAvailable(mPhotoList, status);
         }
         Log.d(TAG, "onDownloadComplete: ends");
